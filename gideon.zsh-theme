@@ -12,23 +12,37 @@ local _return_status="%{$fg[red]%}%(?..⍉)%{$reset_color%}"
 local _hist_no="%{$fg[grey]%}%h%{$reset_color%}"
 function _ip_info() {
   local _ip_address="Not Connected";
-  if [[ -n `ipconfig getifaddr en0` ]]; then
-    _ip_address=`ipconfig getifaddr en0`
-  elif [[ -n `ipconfig getifaddr en2` ]]; then
-    _ip_address=`ipconfig getifaddr en2`
-  elif [[ -n `ipconfig getifaddr en2` ]]; then
-    _ip_address=`ipconfig getifaddr en2`
-  elif [[ -n `ipconfig getifaddr en3` ]]; then
-    _ip_address=`ipconfig getifaddr en3`
-  elif [[ -n `ipconfig getifaddr en4` ]]; then
-    _ip_address=`ipconfig getifaddr en4`
-  elif [[ -n `ipconfig getifaddr en5` ]]; then
-    _ip_address=`ipconfig getifaddr en5`
-  elif [[ -n `ipconfig getifaddr en6` ]]; then
-    _ip_address=`ipconfig getifaddr en6`
-  elif [[ -n `ipconfig getifaddr en7` ]]; then
-    _ip_address=`ipconfig getifaddr en7`
-  fi
+  
+  case "$OSTYPE" in
+    solaris*) ;;
+    darwin*)  
+        if [[ -n `ipconfig getifaddr en0` ]]; then
+          _ip_address=`ipconfig getifaddr en0`
+        elif [[ -n `ipconfig getifaddr en2` ]]; then
+          _ip_address=`ipconfig getifaddr en2`
+        elif [[ -n `ipconfig getifaddr en2` ]]; then
+          _ip_address=`ipconfig getifaddr en2`
+        elif [[ -n `ipconfig getifaddr en3` ]]; then
+          _ip_address=`ipconfig getifaddr en3`
+        elif [[ -n `ipconfig getifaddr en4` ]]; then
+          _ip_address=`ipconfig getifaddr en4`
+        elif [[ -n `ipconfig getifaddr en5` ]]; then
+          _ip_address=`ipconfig getifaddr en5`
+        elif [[ -n `ipconfig getifaddr en6` ]]; then
+          _ip_address=`ipconfig getifaddr en6`
+        elif [[ -n `ipconfig getifaddr en7` ]]; then
+          _ip_address=`ipconfig getifaddr en7`
+        fi
+        ;; 
+    linux*)
+        _ip_address=`ip -4 addr | grep "enp*" | grep -oP '(?<=inet\s)\d+(\.\d+){3}'`
+        ;;
+    bsd*)     ;;
+    msys*)    ;;
+    *)        ;;
+  esac
+  
+
   echo "IP ADDRESS: %{$fg[green]%}$_ip_address%{$reset_color%}"
 }
 function _current_dir() {
